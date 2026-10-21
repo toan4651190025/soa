@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+.vscode
+.run
+data
+target
+**/target
+.env
+*.log

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5f1">
+  <title>Đồ án | Quản lý học vụ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main class="login-screen" id="login-screen">
+    <form class="login-card" id="login-form">
+      <div class="login-brand"><span class="brand-mark">DA</span><span class="brand-copy"><strong>HỌC VỤ</strong><small>QUẢN LÝ ĐỒ ÁN</small></span></div>
+      <p class="eyebrow">CỔNG NGƯỜI DÙNG</p>
+      <h1>Đăng nhập</h1>
+      <p class="login-description">Admin đăng nhập bằng tài khoản quản trị. Sinh viên đăng nhập bằng mã sinh viên và mật khẩu được cấp.</p>
+      <label class="login-field" for="login-username">Tên đăng nhập<input id="login-username" name="username" autocomplete="username" required></label>
+      <label class="login-field" for="login-password">Mật khẩu<input id="login-password" name="password" type="password" autocomplete="current-password" required></label>
+      <p class="form-error" id="login-error" role="alert"></p>
+      <button class="primary-button login-submit" id="login-button" type="submit">Đăng nhập</button>
+      <p class="login-hint">Tài khoản admin demo cục bộ: <strong>admin</strong> / <strong>admin123</strong>. Sinh viên liên hệ admin để được cấp tài khoản.</p>
+    </form>
+  </main>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Trang quản lý đồ án">
+        <span class="brand-mark">DA</span>
+        <span class="brand-copy"><strong>HỌC VỤ</strong><small>QUẢN LÝ ĐỒ ÁN</small></span>
+      </a>
+      <div class="nav-caption">KHÔNG GIAN LÀM VIỆC</div>
+      <nav class="primary-nav" aria-label="Điều hướng chính">
+        <button class="nav-item active" data-view="sinhvien"><span class="nav-symbol">01</span><span>Sinh viên</span><span class="nav-count" id="nav-students">0</span></button>
+        <button class="nav-item" data-view="detai"><span class="nav-symbol">02</span><span>Đề tài</span><span class="nav-count" id="nav-topics">0</span></button>
+        <button class="nav-item" data-view="dangky"><span class="nav-symbol">03</span><span>Đăng ký & điểm</span><span class="nav-count" id="nav-registrations">0</span></button>
+        <button class="nav-item" data-view="accounts"><span class="nav-symbol">04</span><span>Tài khoản SV</span><span class="nav-count" id="nav-accounts">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="term-label">NĂM HỌC</div>
+        <div class="term-value">2025 — 2026 <span>HỌC KỲ 2</span></div>
+        <div class="service-state"><span class="state-dot"></span><span>API đang hoạt động</span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="crumb"><span>KHOA</span><span class="crumb-slash">/</span><strong>ĐỒ ÁN TỐT NGHIỆP</strong></div>
+        <div class="topbar-right"><span class="today" id="today-label"></span><button class="refresh-button" id="refresh-button" type="button" title="Tải lại dữ liệu">Tải lại</button><button class="refresh-button" id="logout-button" type="button">Đăng xuất</button><span class="avatar" title="Quản trị viên">QT</span></div>
+      </header>
+
+      <section class="page-heading">
+        <div><p class="eyebrow">ĐIỀU PHỐI HỌC VỤ <span>·</span> 2025–2026</p><h1 id="page-title">Sinh viên</h1><p class="page-subtitle" id="page-subtitle">Danh sách sinh viên thực hiện đồ án tốt nghiệp</p></div>
+        <button class="primary-button" id="add-button" type="button"><span class="plus">+</span><span id="add-label">Thêm sinh viên</span></button>
+      </section>
+
+      <section class="metrics" aria-label="Tổng quan dữ liệu">
+        <div class="metric"><span class="metric-label">SINH VIÊN</span><strong id="metric-students">—</strong><span class="metric-foot">Hồ sơ trong hệ thống</span><span class="metric-index">01</span></div>
+        <div class="metric"><span class="metric-label">ĐỀ TÀI MỞ</span><strong id="metric-topics">—</strong><span class="metric-foot">Đề tài đang quản lý</span><span class="metric-index">02</span></div>
+        <div class="metric metric-accent"><span class="metric-label">LƯỢT ĐĂNG KÝ</span><strong id="metric-registrations">—</strong><span class="metric-foot" id="metric-score-note">Chưa có dữ liệu điểm</span><span class="metric-index">03</span></div>
+      </section>
+
+      <section class="list-section">
+        <div class="list-heading"><div><h2 id="list-title">Hồ sơ sinh viên</h2><span id="result-count" class="result-count"></span></div><div class="list-tools"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Tìm theo mã, tên..." aria-label="Tìm kiếm"></label><select id="status-filter" aria-label="Lọc trạng thái"><option value="">Tất cả trạng thái</option><option value="DANG_KY">Đăng ký</option><option value="DANG_THUC_HIEN">Đang thực hiện</option><option value="DA_HOAN_THANH">Đã hoàn thành</option></select></div></div>
+        <div class="table-wrap"><table><thead id="table-head"></thead><tbody id="table-body"><tr><td class="loading-cell" colspan="6">Đang tải dữ liệu...</td></tr></tbody></table></div>
+        <div class="table-foot"><span>HỆ THỐNG QUẢN LÝ ĐỒ ÁN</span><span id="last-updated">Đang kết nối dịch vụ</span></div>
+      </section>
+    </main>
+  </div>
+
+  <main class="student-portal" id="student-portal" hidden>
+    <header class="portal-header">
+      <a class="brand portal-brand" href="/" aria-label="Cổng sinh viên">
+        <span class="brand-mark">DA</span>
+        <span class="brand-copy"><strong>HỌC VỤ</strong><small>CỔNG SINH VIÊN</small></span>
+      </a>
+      <div class="portal-user"><div><strong id="portal-student-name">Sinh viên</strong><span id="portal-student-code"></span></div><button class="refresh-button" id="portal-password-button" type="button">Đổi mật khẩu</button><button class="refresh-button" id="portal-logout-button" type="button">Đăng xuất</button></div>
+    </header>
+    <section class="portal-heading">
+      <p class="eyebrow">KHÔNG GIAN SINH VIÊN</p>
+      <h1>Đăng ký đồ án tốt nghiệp</h1>
+      <p class="page-subtitle">Chọn đề tài còn chỉ tiêu và theo dõi trạng thái đăng ký của bạn.</p>
+    </section>
+    <section class="portal-section">
+      <div class="portal-section-heading"><div><h2>Đề tài đang mở</h2><span>Danh mục đề tài và số chỗ còn nhận</span></div><button class="refresh-button" id="portal-refresh" type="button">Tải lại</button></div>
+      <div class="topic-grid" id="portal-topics"><p class="portal-loading">Đang tải đề tài...</p></div>
+    </section>
+    <section class="portal-section">
+      <div class="portal-section-heading"><div><h2>Đăng ký của tôi</h2><span>Chỉ bạn mới xem và hủy được đăng ký của mình</span></div></div>
+      <div class="table-wrap"><table><thead><tr><th>ĐỀ TÀI</th><th>GIẢNG VIÊN HƯỚNG DẪN</th><th>TRẠNG THÁI</th><th>ĐIỂM TỔNG KẾT</th><th></th></tr></thead><tbody id="portal-registrations"><tr><td colspan="5" class="loading-cell">Đang tải đăng ký...</td></tr></tbody></table></div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+      <div class="dialog-head"><div><p class="eyebrow">HỒ SƠ HỌC VỤ</p><h2 id="dialog-title">Thêm mới</h2></div><button class="close-button" id="close-dialog" type="button" aria-label="Đóng">×</button></div>
+      <form id="record-form"><div class="form-fields" id="form-fields"></div><p class="form-error" id="form-error" role="alert"></p><div class="dialog-actions"><button class="quiet-button" id="cancel-dialog" type="button">Hủy</button><button class="primary-button" type="submit" id="save-button">Lưu hồ sơ</button></div></form>
+    </section>
+  </div>
+  <div class="modal-backdrop" id="password-backdrop" hidden>
+    <section class="dialog password-dialog" role="dialog" aria-modal="true" aria-labelledby="password-title">
+      <div class="dialog-head"><div><p class="eyebrow">BẢO MẬT TÀI KHOẢN</p><h2 id="password-title">Đổi mật khẩu</h2></div><button class="close-button" id="close-password" type="button" aria-label="Đóng">×</button></div>
+      <form id="password-form"><div class="form-fields">
+        <div class="field full"><label for="current-password">Mật khẩu hiện tại *</label><input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required></div>
+        <div class="field full"><label for="new-password">Mật khẩu mới (ít nhất 10 ký tự) *</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="10" maxlength="128" required></div>
+      </div><p class="form-error" id="password-error" role="alert"></p><div class="dialog-actions"><button class="quiet-button" id="cancel-password" type="button">Hủy</button><button class="primary-button" type="submit" id="change-password-button">Đổi mật khẩu</button></div></form>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
